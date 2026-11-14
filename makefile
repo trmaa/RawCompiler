@@ -8,7 +8,7 @@ all: rc
 
 rc: $(obj)
 	@echo -e '\e[35mLD $^\e[0m'
-	@cc $^ -o $@
+	@cc $^ -o $@ -m32
 
 obj/%.o: src/%.c
 	@echo -e '\e[32mCC $<\e[0m'

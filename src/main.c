@@ -60,7 +60,8 @@ comp(char *src_path)
 	/* PREPROCESS */
 	if (!strcmp(ext, ".raw")) {
 		if (!fork()) {
-			execlp("cc", "cc", "-E", "-P", "-x", "c",
+			execlp("cc", "cc", "-E", "-P", "-traditional-cpp",
+				"-nostdinc", "-x", "c",
 				src_path, "-o", prep_path, 0);
 		} else {
 			wait(&st);
@@ -95,7 +96,7 @@ comp(char *src_path)
 		} else {
 			wait(&st);
 			if (st) {
-				fatalf(ERR, "%s's compilation failed.\n",
+				fatalf(USER_ERR, "%s's compilation failed.\n",
 					src_path);
 			}
 		}
@@ -128,9 +129,6 @@ comp(char *src_path)
 		if (!(conf.mode & LD)) {
 			sprintf(out_path, "%s.o", name);
 			cp(obj_path, out_path);
-			debug("copiando");
-			debug(obj_path);
-			debug(out_path);
 			return;
 		}
 	} else {
@@ -142,6 +140,6 @@ void
 link(void)
 {
 	char cmd[1024];
-	sprintf(cmd, "cc .tmp/*.o -o %s -m32", conf.out_path);
+	sprintf(cmd, "cc .tmp/*.o -o %s -m32 -w", conf.out_path);
 	system(cmd);
 }
