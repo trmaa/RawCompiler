@@ -1,0 +1,23 @@
+.\"Raw Compiler 1"
+.Dd November 14, 2026
+.Dt RC 1
+.Os Linux
+.Sh NAME
+.Nm Raw Compiler (rc)
+.Nd Small compiler for the raw programming language.
+Compiles .raw source files into elf32 binaries.
+.Sh USAGE
+.Nm rc
+.Fl [opts]
+.Ar [source files]
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It --assemble, -c
+Just produce a .o file.
+.It --help, -h
+Print this message.
+.It --out, -o [path. default: prog]
+Set the binary's name.
+.It --compile, -S
+Just produce a .s file.
+.El
