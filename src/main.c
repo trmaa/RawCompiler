@@ -34,9 +34,7 @@ main(int args_len, char **args)
 		link();
 	}
 
-	rmdir(".tmp");
-
-	return 0;
+	execlp("rm", "rm", "-rf", ".tmp", 0);
 }
 
 void
@@ -78,11 +76,7 @@ comp(char *src_path)
 
 	/* COMPILE */
 	else if (!strcmp(ext, ".i")) {
-		todo("compiler for .raw sources");
-
-		/*
-		 * create an assembly file called $code_path
-		 */
+		compile(src_path, code_path);
 
 		if (!(conf.mode & AS)) {
 			sprintf(out_path, "%s.s", name);
