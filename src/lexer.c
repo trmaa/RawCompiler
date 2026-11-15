@@ -35,6 +35,15 @@ tokenize(char *code)
 			continue;
 		}
 
+		if (c == '/' && code[cid + 1] == '/') {
+			line++;
+			col = -1;
+
+			while (code[++cid] != '\n');
+
+			continue;
+		}
+
 		if (!strcmp(buf, "pub")) tokens[tid].type = TPUB;
 		else if (!strcmp(buf, "fn")) tokens[tid].type = TFN;
 		else if (!strcmp(buf, "let")) tokens[tid].type = TLET;
@@ -103,6 +112,7 @@ tokenize(char *code)
 		tid++;
 		bid = 0;
 		buf[0] = 0;
+		cid--;
 
 		continue;
 

@@ -1,8 +1,10 @@
 #include "ast.h"
 
 int
-code_gen(ast_t *ast, char *code)
+code_gen(ast_t *root, char *code)
 {
+	print_ast(root, 0);
+
 	strcpy(code,
 		".globl main\n"
 		"main:\n"
