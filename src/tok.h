@@ -2,6 +2,9 @@
 #define tok_h
 
 enum tok {
+	/* white space */
+	TEND = 0, TNEWL, TBLANK,
+
 	/* expr */
 	TID, TINTL, TFLOATL, TCHARL, TSTRL,
 
@@ -39,9 +42,6 @@ enum tok {
 	TEAX, TEBX, TECX, TEDX,
 	TPUSH, TPOP,
 	TREF,
-
-	/* white space */
-	TNEWL, TBLANK, TEND
 };
 
 struct token {

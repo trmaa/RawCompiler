@@ -135,7 +135,7 @@ tokenize(char *code)
 		continue;
 	}
 
-	tokens[++tid].type = TEND;
+	tokens[tid].type = TEND;
 
 	return tokens;
 }

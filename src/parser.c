@@ -16,18 +16,23 @@ ast_t root;
 		exit(USER_ERR);	\
 	} while (0)
 
+#define log_tok()	\
+	do {	\
+		fprintf(stderr, "Tok (%d):\t", tok->type);	\
+		fflush(stderr);	\
+		write(2, tok->start, tok->len);	\
+		write(2, "\n", 1);	\
+	} while (0)
+
 ast_t parse_globl();
 ast_t parse_fn();
 
 ast_t *
 parse(struct token *toks)
 {
-	for (tok = toks; tok->type != TEND; tok++) {
-		printf("%d\t->\t %.*s\n", tok->type, tok->len, tok->start);
-	}
-	fflush(stdout);
+	for (tok = toks; tok->type != TEND; tok++)
+		log_tok();
 
-	/*
 	tok = toks;
 
 	root.type = AROOT;
@@ -35,15 +40,13 @@ parse(struct token *toks)
 
 	root.args = ast_vec(10);
 
-	for (;tok->type != TEND;) {
-		printf("expecting: %d\n", TLET);
+	for (; tok->type != TEND;) {
 		if (tok->type == TLET) push(root.args, parse_globl());
 		else if (tok->type == TFN) push(root.args, parse_fn());
 		else {
 			unexpected();
 		}
 	}
-	*/
 
 	return &root;
 }
@@ -53,14 +56,40 @@ parse_globl()
 {
 	ast_t t;
 	t.type = AEND;
+
+	for (; tok->type != TSEMI; tok++);
+	tok++;
+
 	return t;
 }
 
 ast_t
 parse_fn()
 {
+	int nest = 1;
+
 	ast_t t;
 	t.type = AEND;
+
+	for (; tok->type != TLBK; tok++)
+		log_tok();
+	log_tok();
+	tok++;
+	log_tok();
+
+	while (nest > 0) {
+		fprintf(stderr, "nesting: %d => ", nest);
+		log_tok();
+		tok++;
+		if (tok->type == TLBK)
+			nest++;
+		else if (tok->type == TRBK)
+			nest--;
+	}
+	log_tok();
+	tok++;
+	log_tok();
+
 	return t;
 }
 
