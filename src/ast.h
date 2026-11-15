@@ -6,6 +6,8 @@
 enum ast_type {
 	AEND,
 
+	APUB,
+
 	AGLOBL, AID, ATYPE, AEQ, AINTL, AFLOATL, ACHARL, ASTRL,
 
 	AFN,
@@ -20,7 +22,6 @@ enum data_type {
 };
 
 typedef struct ast_node {
-	char pub;
 	enum ast_type type;
 	enum data_type data_type;
 	struct token *pos;

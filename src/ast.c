@@ -87,6 +87,13 @@ print_ast(ast_t *root, int nest)
 		}
 		putchar('\n');
 	}
+	else if (root->type == APUB) {
+		printf("PUB:\n");
+		for (i = 0; i < ast_hdr(root->args)->size; i++) {
+			print_ast(&root->args[i], nest + 1);
+		}
+		putchar('\n');
+	}
 	else if (root->type == AEQ) {
 		printf("=\n");
 		for (i = 0; i < ast_hdr(root->args)->size; i++) {

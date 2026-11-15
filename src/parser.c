@@ -32,6 +32,9 @@ ast_t root = {0};
 
 ast_t parse_globl();
 ast_t parse_fn();
+ast_t parse_pub();
+ast_t parse_aux_bk();
+ast_t parse_aux_semi();
 
 ast_t *
 parse(struct token *toks)
@@ -46,12 +49,33 @@ parse(struct token *toks)
 	for (; tok->type != TEND;) {
 		if (tok->type == TLET) root.args = push_ast(root.args, parse_globl());
 		else if (tok->type == TFN) root.args = push_ast(root.args, parse_fn());
+		else if (tok->type == TPUB) root.args = push_ast(root.args, parse_pub());
 		else {
 			unexpected();
 		}
 	}
 
 	return &root;
+}
+
+ast_t
+parse_pub()
+{
+	ast_t a = {0};
+	a.type = APUB;
+	a.pos = tok;
+
+	tok++;
+
+	a.args = new_ast_vec(2);
+
+	if (tok->type == TLET) a.args = push_ast(a.args, parse_globl());
+	else if (tok->type == TFN) a.args = push_ast(a.args, parse_fn());
+	else {
+		unexpected();
+	}
+
+	return a;
 }
 
 ast_t
@@ -62,13 +86,6 @@ parse_globl()
 	a.pos = tok;
 
 	tok++;
-
-	if (tok->type == TPUB) {
-		b.pub = 1;
-		tok++;
-	} else {
-		b.pub = 0;
-	}
 
 	if (tok->type != TID)
 		unexpected();
@@ -162,6 +179,41 @@ parse_fn()
 		else if (tok->type == TRBK)
 			nest--;
 	}
+	tok++;
+
+	return t;
+}
+
+ast_t
+parse_aux_bk()
+{
+	int nest = 1;
+
+	ast_t t = {0};
+	t.type = AEND;
+
+	for (; tok->type != TLBK; tok++);
+	tok++;
+
+	while (nest > 0) {
+		tok++;
+		if (tok->type == TLBK)
+			nest++;
+		else if (tok->type == TRBK)
+			nest--;
+	}
+	tok++;
+
+	return t;
+}
+
+ast_t
+parse_aux_semi()
+{
+	ast_t t = {0};
+	t.type = AEND;
+
+	for (; tok->type != TSEMI; tok++);
 	tok++;
 
 	return t;
