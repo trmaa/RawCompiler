@@ -6,12 +6,13 @@ struct conf conf;
 int
 config(int n, char **v)
 {
-	char *sops = "cho:S";
+	char *sops = "cho:Sv";
 	struct option lops[] = {
 		{ "assemble", 0, 0, 'c' },
 		{ "help", 0, 0, 'h' },
 		{ "out", 1, 0, 'o' },
 		{ "compile", 0, 0, 'S' },
+		{ "version", 0, 0, 'v' },
 		{ 0, 0, 0, 0 }
 	};
 	int opt;
@@ -33,6 +34,9 @@ config(int n, char **v)
 		case 'S':
 			conf.mode = 0;
 			break;
+		case 'v':
+			version();
+			exit(1);
 		case '?':
 		default:
 			exit(66);

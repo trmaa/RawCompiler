@@ -1,6 +1,8 @@
 #ifndef lexer_h
 #define lexer_h
 
+#include "tok.h"
+
 enum ast_type {
 	AEND,
 
@@ -18,11 +20,14 @@ enum data_type {
 };
 
 typedef struct ast_node {
+	char pub;
 	enum ast_type type;
+	enum data_type data_type;
+	struct token *pos;
+
+	/* heap!!! */
 	struct ast_node *args;
 	char *val;
-	char pub;
-	enum data_type data_type;
 } ast_t;
 
 typedef struct astvec_hdr {
@@ -31,11 +36,5 @@ typedef struct astvec_hdr {
 
 #define ast_hdr(v) ((ast_hdr *)v - 1)
 #define ast_vec(h) ((ast_t *)&h[1])
-
-void print_ast(ast_t *ast, int nesting);
-
-void free_astv(ast_t *v);
-ast_t *new_ast_vec(int size);
-ast_t *push_ast(ast_t *v, ast_t n);
 
 #endif

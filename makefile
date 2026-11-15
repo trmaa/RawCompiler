@@ -1,4 +1,5 @@
-modern_flags = -ansi -m32 -D_GNU_SOURCE
+# Use this flag with GCC versions after 1999.
+post_ansi_flags = -ansi -m32 -D_GNU_SOURCE
 ccf = -w
 
 src = $(wildcard src/*.c)
@@ -13,7 +14,7 @@ rc: $(obj)
 obj/%.o: src/%.c
 	@echo -e '\e[32mCC $<\e[0m'
 	@mkdir -p obj
-	@cc -c $< -o $@ $(ccf) $(modern_flags)
+	@cc -c $< -o $@ $(ccf) $(post_ansi_flags)
 
 .PHONY: all clean install
 

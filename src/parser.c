@@ -39,6 +39,7 @@ parse(struct token *toks)
 	tok = toks;
 
 	root.type = AROOT;
+	root.pos = tok;
 
 	root.args = new_ast_vec(10);
 
@@ -58,6 +59,7 @@ parse_globl()
 {
 	ast_t a = {0}, b = {0}, c = {0}, d = {0};
 	a.type = AGLOBL;
+	a.pos = tok;
 
 	tok++;
 
@@ -72,6 +74,7 @@ parse_globl()
 		unexpected();
 
 	b.type = AID;
+	b.pos = tok;
 	b.val = malloc((1 + tok->len) * sizeof (char));
 	sprintf(b.val, "%.*s\0", tok->len, tok->start);
 
@@ -82,6 +85,7 @@ parse_globl()
 
 	if (tok->type == TEQ) {
 		c.type = AEQ;
+		c.pos = tok;
 
 		tok++;
 
@@ -101,6 +105,7 @@ parse_globl()
 			unexpected();
 		}
 
+		d.pos = tok;
 		d.val = malloc((1 + tok->len) * sizeof (char));
 		sprintf(d.val, "%.*s\0", tok->len, tok->start);
 
@@ -123,6 +128,8 @@ parse_globl()
 		} else {
 			unexpected();
 		}
+
+		c.pos = tok;
 	}
 
 	a.args = push_ast(a.args, c);
