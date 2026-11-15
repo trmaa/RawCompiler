@@ -113,9 +113,13 @@ parse_globl()
 
 		tok++;
 
-		if (tok->type == TWORD) {
+		if (tok->type == TWORD || tok->type == TFLOAT
+			|| tok->type == TBYTE || tok->type == TARR
+			|| tok->type == TFARR || tok->type == TSSTR
+			|| tok->type == TVEC || tok->type == TFVEC
+			|| tok->type == TSTR) {
 			c.type = ATYPE;
-			c.data_type = DWORD;
+			c.data_type = tok->type;
 		} else {
 			unexpected();
 		}
