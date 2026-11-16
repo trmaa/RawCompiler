@@ -8,7 +8,9 @@ enum ast_type {
 
 	APUB,
 
-	AGLOBL, AID, ATYPE, AEQ, AINTL, AFLOATL, ACHARL, ASTRL,
+	AEXPR, AOP,
+
+	AGLOBL, AID, ATYPE, AEQ, ALIT,
 
 	AFN,
 

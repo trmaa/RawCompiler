@@ -85,12 +85,23 @@ print_ast_aux(ast_t *root, int nest)
 	else if (root->type == AID) {
 		printf("ID(%s)\n", root->val);
 	}
-	else if (root->type == AINTL || root->type == ACHARL
-		|| root->type == ASTRL || root->type == AFLOATL) {
+	else if (root->type == ALIT) {
 		printf("LIT(%s)\n", root->val);
 	}
 	else if (root->type == ATYPE) {
 		printf("TYPE(%d)\n", root->tok->type);
+	}
+	else if (root->type == AOP) {
+		printf("OP(%d):\n", root->tok->type);
+		for (i = 0; i < size; i++) {
+			print_ast_aux(&root->args[i], nest + 1);
+		}
+	}
+	else if (root->type == AEXPR) {
+		printf("EXPR:\n");
+		for (i = 0; i < size; i++) {
+			print_ast_aux(&root->args[i], nest + 1);
+		}
 	}
 	else if (root->type == AGLOBL) {
 		printf("GLOBL:\n");

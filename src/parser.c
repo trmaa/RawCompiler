@@ -30,6 +30,8 @@ ast_t root = {0};
 			log_tok();	\
 	} while (0)
 
+ast_t parse_expr();
+ast_t parse_stmt();
 ast_t parse_globl();
 ast_t parse_fn();
 ast_t parse_pub();
@@ -58,6 +60,60 @@ parse(struct token *toks)
 	root.args = push_ast(root.args, (ast_t){ AEND, 0, 0, 0 });
 
 	return &root;
+}
+
+
+ast_t
+parse_expr()
+{
+	ast_t a = {0}, b = {0};
+
+	a.type = AEXPR;
+	a.tok = tok;
+
+	a.args = new_ast_vec(2);
+
+	if (tok->type == TINTL || tok->type == TFLOATL
+		|| tok->type == TCHARL || tok->type == TSTRL) b.type = ALIT;
+	else if (tok->type == TID) b.type = AID;
+	/* TODO references, and calls */
+	else unexpected();
+
+	b.tok = tok;
+	b.val = malloc((1 + tok->len) * sizeof (char));
+	sprintf(b.val, "%.*s\0", tok->len, tok->start);
+
+	a.args = push_ast(a.args, b);
+
+	tok++;
+
+	if (tok->type == TSEMI) {
+		tok--;
+		return a;
+	}
+
+	/* TODO shifts and incs */
+	if (tok->type == TADD || tok->type == TSUB || tok->type == TMULT
+			|| tok->type == TDIV || tok->type == TMOD) {
+		b = (ast_t){0};
+
+		b.type = AOP;
+		b.tok = tok++;
+
+		b.args = new_ast_vec(3);
+		b.args = push_ast(b.args, a.args[0]);
+		b.args = push_ast(b.args, parse_expr());
+
+		a.args[0] = b;
+	}
+
+	return a;
+}
+
+ast_t
+parse_stmt()
+{
+	return parse_aux_bk();
 }
 
 ast_t
@@ -131,18 +187,8 @@ parse_globl()
 
 		tok++;
 
-		if (tok->type == TINTL) c.type = AINTL;
-		else if (tok->type == TFLOATL) c.type = AFLOATL;
-		else if (tok->type == TCHARL) c.type = ACHARL;
-		else if (tok->type == TSTRL) c.type = ASTRL;
-		else unexpected();
-
-		c.tok = tok;
-		c.val = malloc((1 + tok->len) * sizeof (char));
-		sprintf(c.val, "%.*s\0", tok->len, tok->start);
-
 		b.args = new_ast_vec(2);
-		b.args = push_ast(b.args, c);
+		b.args = push_ast(b.args, parse_expr());
 
 		a.args = push_ast(a.args, b);
 		tok++;
