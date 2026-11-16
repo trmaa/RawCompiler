@@ -35,6 +35,8 @@ to produce a binary. (more help on '$ man rc')
 Options:
         --assemble, -c
                 Just produce a .o file.
+        --preprocess, -E
+                Just preprocess .raw into .i.
         --help, -h
                 Print this message.
         --out, -o [path. default: prog]
