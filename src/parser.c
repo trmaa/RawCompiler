@@ -18,7 +18,7 @@ ast_t root = {0};
 
 #define log_tok()	\
 	do {	\
-		fprintf(stderr, "[%d](%d):\t", tok->type, tok->line);	\
+		fprintf(stderr, "[%02d](%04d): ", tok->type, tok->line);	\
 		fflush(stderr);	\
 		write(2, tok->start, tok->len);	\
 		write(2, "\n", 1);	\
@@ -42,7 +42,7 @@ parse(struct token *toks)
 	tok = toks;
 
 	root.type = AROOT;
-	root.pos = tok;
+	root.tok = tok;
 
 	root.args = new_ast_vec(10);
 
@@ -55,6 +55,8 @@ parse(struct token *toks)
 		}
 	}
 
+	root.args = push_ast(root.args, (ast_t){ AEND, 0, 0, 0 });
+
 	return &root;
 }
 
@@ -63,7 +65,7 @@ parse_pub()
 {
 	ast_t a = {0};
 	a.type = APUB;
-	a.pos = tok;
+	a.tok = tok;
 
 	tok++;
 
@@ -83,7 +85,7 @@ parse_globl()
 {
 	ast_t a = {0}, b = {0}, c = {0}, d = {0};
 	a.type = AGLOBL;
-	a.pos = tok;
+	a.tok = tok;
 
 	tok++;
 
@@ -91,67 +93,56 @@ parse_globl()
 		unexpected();
 
 	b.type = AID;
-	b.pos = tok;
+	b.tok = tok;
 	b.val = malloc((1 + tok->len) * sizeof (char));
 	sprintf(b.val, "%.*s\0", tok->len, tok->start);
 
-	a.args = new_ast_vec(3);
+	a.args = new_ast_vec(5);
 	a.args = push_ast(a.args, b);
 
 	tok++;
 
-	if (tok->type == TEQ) {
-		c.type = AEQ;
-		c.pos = tok;
-
+	if (tok->type == TKTL) {
 		tok++;
 
-		if (tok->type == TINTL) {
-			d.type = AINTL;
-		}
-		else if (tok->type == TFLOATL) {
-			d.type = AFLOATL;
-		}
-		else if (tok->type == TCHARL) {
-			d.type = ACHARL;
-		}
-		else if (tok->type == TSTRL) {
-			d.type = ASTRL;
-		}
-		else {
+		if (tok->type == TWORD || tok->type == TFLOAT
+				|| tok->type == TBYTE || tok->type == TARR
+				|| tok->type == TFARR || tok->type == TSSTR
+				|| tok->type == TVEC || tok->type == TFVEC
+				|| tok->type == TSTR) {
+			c.type = ATYPE;
+		} else {
 			unexpected();
 		}
 
-		d.pos = tok;
+		c.tok = tok;
+
+		a.args = push_ast(a.args, c);
+		tok++;
+	}
+
+	if (tok->type == TEQ) {
+		c.type = AEQ;
+		c.tok = tok;
+
+		tok++;
+
+		if (tok->type == TINTL) d.type = AINTL;
+		else if (tok->type == TFLOATL) d.type = AFLOATL;
+		else if (tok->type == TCHARL) d.type = ACHARL;
+		else if (tok->type == TSTRL) d.type = ASTRL;
+		else unexpected();
+
+		d.tok = tok;
 		d.val = malloc((1 + tok->len) * sizeof (char));
 		sprintf(d.val, "%.*s\0", tok->len, tok->start);
 
 		c.args = new_ast_vec(2);
 		c.args = push_ast(c.args, d);
-	}
-	else {
-		if (tok->type != TKTL)
-			unexpected();
 
+		a.args = push_ast(a.args, c);
 		tok++;
-
-		if (tok->type == TWORD || tok->type == TFLOAT
-			|| tok->type == TBYTE || tok->type == TARR
-			|| tok->type == TFARR || tok->type == TSSTR
-			|| tok->type == TVEC || tok->type == TFVEC
-			|| tok->type == TSTR) {
-			c.type = ATYPE;
-			c.data_type = tok->type;
-		} else {
-			unexpected();
-		}
-
-		c.pos = tok;
 	}
-
-	a.args = push_ast(a.args, c);
-
-	tok++;
 
 	if (tok->type != TSEMI)
 		unexpected();
@@ -168,6 +159,7 @@ parse_fn()
 
 	ast_t t = {0};
 	t.type = AFN;
+	t.tok = tok;
 
 	for (; tok->type != TLBK; tok++);
 	tok++;

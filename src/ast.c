@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "ast.h"
 
 ast_t *
@@ -62,10 +63,18 @@ print_ast(ast_t *root, int nest)
 {
 	int i;
 
-	/*printf("[%d]", root->type);*/
+	printf("\x1b[32m[%02d]\x1b[33m", root->type);/**/
 
-	for (i = 0; i < nest; i++)
-		putchar('\t');
+	if (nest > 0) {
+		for (i = 0; i < nest - 1; i++)
+			printf("        ");
+		putchar('L');
+		for (i = 1; i < 7; i++)
+			putchar('_');
+		putchar(' ');
+	}
+
+	printf("\x1b[36m");
 
 	if (root->type == AEND) {
 		printf("END\n");
@@ -75,51 +84,47 @@ print_ast(ast_t *root, int nest)
 	}
 	else if (root->type == AINTL || root->type == ACHARL
 		|| root->type == ASTRL || root->type == AFLOATL) {
-		printf("%s\nÂ", root->val);
+		printf("LIT(%s)\n", root->val);
 	}
 	else if (root->type == ATYPE) {
-		printf("TYPE(%d)\n", root->data_type);
+		printf("TYPE(%d)\n", root->tok->type);
 	}
 	else if (root->type == AGLOBL) {
 		printf("GLOBL:\n");
 		for (i = 0; i < ast_hdr(root->args)->size; i++) {
 			print_ast(&root->args[i], nest + 1);
 		}
-		putchar('\n');
 	}
 	else if (root->type == APUB) {
 		printf("PUB:\n");
 		for (i = 0; i < ast_hdr(root->args)->size; i++) {
 			print_ast(&root->args[i], nest + 1);
 		}
-		putchar('\n');
 	}
 	else if (root->type == AEQ) {
 		printf("=\n");
 		for (i = 0; i < ast_hdr(root->args)->size; i++) {
 			print_ast(&root->args[i], nest + 1);
 		}
-		putchar('\n');
 	}
 	else if (root->type == AFN) {
 		printf("FN:\n");
 		/*for (i = 0; i < ast_hdr(root->args)->size; i++) {
 			print_ast(&root->args[i]);
 		}*/
-		putchar('\n');
 	}
 	else if (root->type == AROOT) {
 		printf("ROOT:\n");
 		for (i = 0; i < ast_hdr(root->args)->size; i++) {
 			print_ast(&root->args[i], nest + 1);
 		}
-		putchar('\n');
 	}
 	else {
 		printf("TOK(%d):\n", root->type);
 		for (i = 0; i < ast_hdr(root->args)->size; i++) {
 			print_ast(&root->args[i], nest + 1);
 		}
-		putchar('\n');
 	}
+
+	printf("\x1b[0m");
 }

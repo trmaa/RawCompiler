@@ -3,7 +3,7 @@ help()
 {
 	puts("RC -- Compiles .raw files into elf32 binaries.");
 	puts("Usage: rc [opts] [source files]");
-	puts("to produce a binary. (more help on '$ man rcÂ')");
+	puts("to produce a binary. (more help on '$ man rc')");
 	puts("Options:");
 	puts("\t--assemble, -c\n\t\tJust produce a .o file.");
 	puts("\t--help, -h\n\t\tPrint this message.");

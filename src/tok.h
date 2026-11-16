@@ -3,7 +3,7 @@
 
 enum tok {
 	/* white space */
-	TEND = 0, TNEWL, TBLANK,
+	TEND = 0,
 
 	/* expr */
 	TID, TINTL, TFLOATL, TCHARL, TSTRL,

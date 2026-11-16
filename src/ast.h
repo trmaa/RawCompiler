@@ -1,5 +1,5 @@
-#ifndef lexer_h
-#define lexer_h
+#ifndef ast_h
+#define ast_h
 
 #include "tok.h"
 
@@ -15,16 +15,9 @@ enum ast_type {
 	AROOT
 };
 
-enum data_type {
-	DWORD, DFLOAT, DBYTE,
-	DARR, DFARR, DSSTR,
-	DVEC, DFVEC, DSTR
-};
-
 typedef struct ast_node {
 	enum ast_type type;
-	enum data_type data_type;
-	struct token *pos;
+	struct token *tok;
 
 	/* heap!!! */
 	struct ast_node *args;
