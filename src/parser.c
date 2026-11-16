@@ -93,6 +93,7 @@ parse_expr()
 	}
 
 	/* TODO shifts and incs */
+	/* TODO parenthesis for OP order */
 	if (tok->type == TADD || tok->type == TSUB || tok->type == TMULT
 			|| tok->type == TDIV || tok->type == TMOD) {
 		b = (ast_t){0};
