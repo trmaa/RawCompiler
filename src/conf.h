@@ -8,8 +8,9 @@
 			"-Wno-int-conversion"
 
 enum step {
-	AS = 1,
-	LD = 2
+	CMP = 1,
+	AS = 2,
+	LD = 4
 };
 
 struct conf {

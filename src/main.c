@@ -71,6 +71,12 @@ comp(char *src_path)
 					src_path);
 		}
 
+		if (!(conf.mode & CMP)) {
+			sprintf(out_path, "%s.i", name);
+			cp(prep_path, out_path);
+			return;
+		}
+
 		comp(prep_path);
 		return;
 	}

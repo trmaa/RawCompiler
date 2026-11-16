@@ -3,7 +3,7 @@
 int
 code_gen(ast_t *root, char *code)
 {
-	print_ast(root, 0);
+	print_ast(root);
 
 	strcpy(code,
 		".globl main\n"

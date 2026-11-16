@@ -6,9 +6,10 @@ struct conf conf;
 int
 config(int n, char **v)
 {
-	char *sops = "cho:Sv";
+	char *sops = "cEho:Sv";
 	struct option lops[] = {
 		{ "assemble", 0, 0, 'c' },
+		{ "preprocess", 0, 0, 'E' },
 		{ "help", 0, 0, 'h' },
 		{ "out", 1, 0, 'o' },
 		{ "compile", 0, 0, 'S' },
@@ -17,13 +18,16 @@ config(int n, char **v)
 	};
 	int opt;
 
-	conf.mode = AS | LD;
+	conf.mode = CMP | AS | LD;
 	conf.out_path = "prog";
 
 	while ((opt = getopt_long(n, v, sops, lops, 0)) != -1) {
 		switch (opt) {
 		case 'c':
-			conf.mode = AS;
+			conf.mode &= ~LD;
+			break;
+		case 'E':
+			conf.mode = 0;
 			break;
 		case 'h':
 			help();
@@ -32,7 +36,7 @@ config(int n, char **v)
 			conf.out_path = optarg;
 			break;
 		case 'S':
-			conf.mode = 0;
+			conf.mode = CMP;
 			break;
 		case 'v':
 			version();

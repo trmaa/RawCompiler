@@ -58,10 +58,10 @@ free_ast(ast_t ast)
 	}
 }
 
-void
-print_ast(ast_t *root, int nest)
+static void
+print_ast_aux(ast_t *root, int nest)
 {
-	int i;
+	int i, size;
 
 	printf("\x1b[32m[%02d]\x1b[33m", root->type);/**/
 
@@ -75,6 +75,9 @@ print_ast(ast_t *root, int nest)
 	}
 
 	printf("\x1b[36m");
+
+	if (root->args)
+		size = ast_hdr(root->args)->size;
 
 	if (root->type == AEND) {
 		printf("END\n");
@@ -91,40 +94,47 @@ print_ast(ast_t *root, int nest)
 	}
 	else if (root->type == AGLOBL) {
 		printf("GLOBL:\n");
-		for (i = 0; i < ast_hdr(root->args)->size; i++) {
-			print_ast(&root->args[i], nest + 1);
+		for (i = 0; i < size; i++) {
+			print_ast_aux(&root->args[i], nest + 1);
 		}
 	}
 	else if (root->type == APUB) {
 		printf("PUB:\n");
-		for (i = 0; i < ast_hdr(root->args)->size; i++) {
-			print_ast(&root->args[i], nest + 1);
+		for (i = 0; i < size; i++) {
+			print_ast_aux(&root->args[i], nest + 1);
 		}
 	}
 	else if (root->type == AEQ) {
 		printf("=\n");
-		for (i = 0; i < ast_hdr(root->args)->size; i++) {
-			print_ast(&root->args[i], nest + 1);
+		for (i = 0; i < size; i++) {
+			print_ast_aux(&root->args[i], nest + 1);
 		}
 	}
 	else if (root->type == AFN) {
 		printf("FN:\n");
-		/*for (i = 0; i < ast_hdr(root->args)->size; i++) {
-			print_ast(&root->args[i]);
+		/*for (i = 0; i < size; i++) {
+			print_ast_aux(&root->args[i]);
 		}*/
 	}
 	else if (root->type == AROOT) {
 		printf("ROOT:\n");
-		for (i = 0; i < ast_hdr(root->args)->size; i++) {
-			print_ast(&root->args[i], nest + 1);
+		for (i = 0; i < size; i++) {
+			print_ast_aux(&root->args[i], nest + 1);
 		}
 	}
 	else {
 		printf("TOK(%d):\n", root->type);
-		for (i = 0; i < ast_hdr(root->args)->size; i++) {
-			print_ast(&root->args[i], nest + 1);
+		for (i = 0; i < size; i++) {
+			print_ast_aux(&root->args[i], nest + 1);
 		}
 	}
 
 	printf("\x1b[0m");
+
+}
+
+void
+print_ast(ast_t *root)
+{
+	print_ast_aux(root, 0);
 }
