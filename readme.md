@@ -35,8 +35,10 @@ to produce a binary. (more help on '$ man rc')
 Options:
         --assemble, -c
                 Just produce a .o file.
+        --debug-logs, -d [bitset]
+                Log information about the compilation steps flagged.
         --preprocess, -E
-                Just preprocess .raw into .i.
+                Just preprocess a .raw file into a .i.
         --help, -h
                 Print this message.
         --out, -o [path. default: prog]

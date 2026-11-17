@@ -1,5 +1,5 @@
 .\"Raw Compiler 1"
-.Dd November 16, 2026
+.Dd November 17, 2026
 .Dt RC 1
 .Os Linux
 .Sh NAME
@@ -14,6 +14,11 @@ Compiles .raw source files into elf32 binaries.
 .Bl -tag -width Ds
 .It --assemble, -c
 Just produce a .o file.
+.It --debug-logs, -d [bitset]
+Log information about the compilation steps flagged.
+Steps: preprocessor (bit 0), lexer (bit 1), parser (bit 2), codegen (bit 3)...
+For example, printing information about the lexer and the parser would
+be --debug 6.
 .It --preprocess, -E
 Just preprocess a .raw file into a .i.
 .It --help, -h

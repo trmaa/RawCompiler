@@ -1,0 +1,57 @@
+#! /usr/bin/env bash
+
+# grep.sh
+#
+# Script to look up the code base in search of strings.
+# Usage at: ./grep -h
+#
+# Copyright (c) 2026 Pablo Trik Marin
+# License: GPL
+
+OK=0
+ERR=1
+
+help() {
+	local stat=$1
+
+	echo "Use: ./grep [opts] 'string to search'"
+	echo 'Out: The file and line number where the string was found in src/*'
+	echo 'Opts: -h prints this msg'
+
+	exit $stat
+}
+
+main() {
+	if (( $# < 1 )); then
+		echo -e '\e[33mTo grep the base, you need a string to grep for\e[0m' >&2
+		help $ERR
+	fi
+
+	[[ "$1" == '-h' ]] && help $OK
+
+	local errno=$ERR
+	local args="$@"
+	local output=""
+
+	for search in "${args[@]}"; do
+		output+=" - Matches for '$search'"$'\n'
+
+		local f
+		for f in src/*; do
+			[[ -f "$f" ]] || continue
+
+			local match=$(nl -ba -v 1 < "$f" | grep -F "$search")
+			if [[ -n $match ]]; then
+				output+="$f"$'\n'
+				output+="$match"$'\n'
+				errno=$OK
+			fi
+		done
+	done
+
+	printf '%s' "$output" | less -RF # avoid subshelling
+
+	return $errno
+}
+
+main "$@"

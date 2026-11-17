@@ -23,3 +23,11 @@ cp(char *f0, char *f1)
 	close(fd0);
 	close(fd1);
 }
+
+void
+cat(char *path)
+{
+	int fd = open(path, O_RDONLY);
+	int len = read(fd, buf, 4096);
+	write(1, buf, len);
+}

@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include "conf.h"
 #include "ast.h"
 #include "tok.h"
 #include "err.h"
 
-struct token *tok;
+static struct token *tok;
 ast_t root = {0};
 
 #define unexpected()	\
@@ -52,12 +53,14 @@ parse(struct token *toks)
 		if (tok->type == TLET) root.args = push_ast(root.args, parse_globl());
 		else if (tok->type == TFN) root.args = push_ast(root.args, parse_fn());
 		else if (tok->type == TPUB) root.args = push_ast(root.args, parse_pub());
-		else {
-			unexpected();
-		}
+		else unexpected();
 	}
 
 	root.args = push_ast(root.args, (ast_t){ AEND, 0, 0, 0 });
+
+	if (conf.logs & AST) {
+		print_ast(&root);
+	}
 
 	return &root;
 }
@@ -130,9 +133,7 @@ parse_pub()
 
 	if (tok->type == TLET) a.args = push_ast(a.args, parse_globl());
 	else if (tok->type == TFN) a.args = push_ast(a.args, parse_fn());
-	else {
-		unexpected();
-	}
+	else unexpected();
 
 	return a;
 }

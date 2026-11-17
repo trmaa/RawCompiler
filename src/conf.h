@@ -13,8 +13,16 @@ enum step {
 	LD = 4
 };
 
+enum debug {
+	PREP = 1,
+	TOKS = 2,
+	AST = 4,
+	CODE = 8
+};
+
 struct conf {
 	enum step mode;
+	enum debug logs;
 	char *out_path;
 };
 

@@ -77,6 +77,10 @@ comp(char *src_path)
 			return;
 		}
 
+		if (conf.logs & PREP) {
+			cat(prep_path);
+		}
+
 		comp(prep_path);
 		return;
 	}

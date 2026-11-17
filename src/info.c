@@ -6,6 +6,7 @@ help()
 	puts("to produce a binary. (more help on '$ man rc')");
 	puts("Options:");
 	puts("\t--assemble, -c\n\t\tJust produce a .o file.");
+	puts("\t--debug-logs, -d [bitset]\n\t\tLog information about the compilation steps flagged.");
 	puts("\t--preprocess, -E\n\t\tJust preprocess a .raw file into a .i.");
 	puts("\t--help, -h\n\t\tPrint this message.");
 	puts("\t--out, -o [path. default: prog]\n\t\tSet the binary's name.");

@@ -68,7 +68,7 @@ print_ast_aux(ast_t *root, int nest)
 	if (nest > 0) {
 		for (i = 0; i < nest - 1; i++)
 			printf("        ");
-		putchar('L');
+		putchar('!');
 		for (i = 1; i < 7; i++)
 			putchar('_');
 		putchar(' ');

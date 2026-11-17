@@ -1,5 +1,14 @@
 #include <stdio.h>
+#include "conf.h"
 #include "tok.h"
+
+#define log_toks() \
+	do { \
+		for (tok = tokens; tok->type != TEND; tok++) { \
+			printf("%02d, %04d: %.*s\n", tok->type, \
+				tok->line, tok->len, tok->start); \
+		} \
+	} while (0)
 
 static char *special = "X()[]{};:,-+/*<>=%&|^~\"\'!@";
 static char *white = "X \n\t";
@@ -9,6 +18,7 @@ static struct token tokens[1024];
 int line = 1, col = -1;
 int cid, tid = 0, bid = 0, i;
 char c, buf[32];
+static struct token *tok = tokens;
 
 static int
 char_in(char c, char *s)
@@ -146,6 +156,10 @@ tokenize(char *code)
 	}
 
 	tokens[tid].type = TEND;
+
+	if (conf.logs & TOKS) {
+		log_toks();
+	}
 
 	return tokens;
 }
