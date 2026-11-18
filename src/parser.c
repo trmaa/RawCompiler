@@ -91,24 +91,23 @@ parse_expr()
 	tok++;
 
 	if (tok->type == TSEMI) {
+		free(ast_hdr(a.args)); /* holds b */
 		tok--;
-		return a;
+		return b; /* drop a */
 	}
 
-	/* TODO shifts and incs */
-	/* TODO parenthesis for OP order */
+	/* TODO OP precedence */
 	if (tok->type == TADD || tok->type == TSUB || tok->type == TMULT
-			|| tok->type == TDIV || tok->type == TMOD) {
-		b = (ast_t){0};
+			|| tok->type == TDIV || tok->type == TMOD
+			|| tok->type == TAND || tok->type == TOR
+			|| tok->type == TBAND || tok->type == TBOR
+			|| tok->type == TNOT || tok->type == TBNOT
+			|| tok->type == TXOR
+			|| tok->type == TSHR || tok->type == TSHL) {
+		a.type = AOP;
+		a.tok = tok++;
 
-		b.type = AOP;
-		b.tok = tok++;
-
-		b.args = new_ast_vec(3);
-		b.args = push_ast(b.args, a.args[0]);
-		b.args = push_ast(b.args, parse_expr());
-
-		a.args[0] = b;
+		a.args = push_ast(a.args, parse_expr());
 	}
 
 	return a;

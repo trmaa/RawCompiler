@@ -27,11 +27,12 @@ free_astv(ast_t *v)
 ast_t *
 push_ast(ast_t *v, ast_t n)
 {
+	int size, capa;
 	ast_hdr *h = ast_hdr(v);
 
 	h->size++;
-	int size = h->size;
-	int capa = h->capa;
+	size = h->size;
+	capa = h->capa;
 
 	if (size >= capa) {
 		h->capa *= 2;
@@ -52,7 +53,6 @@ free_ast(ast_t ast)
 		free_astv(ast.args);
 	}
 
-	/* there is only one string sins its a union */
 	if (ast.val) {
 		free(ast.val);
 	}
